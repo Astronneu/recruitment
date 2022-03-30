@@ -1,0 +1,23 @@
+Zapytanie 1: listę wszystkich produktów posortowanych alfabetycznie oraz po cenie malejąco
+SELECT * FROM `Products` ORDER BY `ProductName` ASC, `Price` DESC;
+
+Zapytanie 2: zamówienie (id zamówienia, data zamówienia, nazwa produktu, ilość produktu (sztuki) w zamówieniu) dla zamówienia o id 10406
+SELECT o.OrderID as "ID zamówienia", o.OrderDate as "Data zamówienia", p.ProductName as "Nazwa produktu", od.Quantity as "Sztuk" 
+FROM Orders o
+    JOIN OrderDetails od ON od.OrderID = o.OrderID 
+    JOIN Products p ON od.ProductID = p.ProductID
+WHERE o.OrderID = 10406;
+
+Zapytanie 3: liczbę produktów w poszczególnych kategoriach (id kategorii, nazwa kategorii, liczba produktów) posortowanych rosnąco po liczbie produktów
+SELECT cat.CategoryID AS "ID kategorii", cat.CategoryName AS "Nazwa kategorii", COUNT(pro.CategoryID) AS "Ilość produktów w kategorii" 
+FROM Categories cat
+    JOIN Products pro ON cat.CategoryID = pro.CategoryID
+GROUP BY cat.CategoryID;
+
+Zapytanie 4: top 10 zamówień o największej wartości (id zamówienia, data zamówienia, wartość) ze stycznia 1997
+SELECT od.OrderID as "ID zamówienia", o.OrderDate as "Data zamówienia", SUM(od.Quantity * p.Price)  as "Wartość"
+FROM OrderDetails od
+    JOIN Orders o ON od.OrderID = o.OrderID
+    JOIN Products p ON od.ProductID = p.ProductID
+WHERE o.OrderDate >= "1997-01-01" AND o.OrderDate <= "1997-01-31" GROUP BY od.OrderID ORDER BY SUM(od.Quantity * p.Price) DESC LIMIT 10;
+
